@@ -1,123 +1,137 @@
-import tkinter as gui
-from tkinter import ttk
+import pygame
+import time
 from gameplay import game
 
-class graphic(gui.Tk):
+pygame.font.init()
+#variable used
+display_width=290
+display_height=340
+marker=0
+mode=0
 
-    def __init__(self):
-
-        self.display_width = 300
-        self.display_height =350
-        self.mode=None
-        self.marker=None
-        super().__init__()
-        self.title("TicTacToe")
-        self.geometry("300x350")
-        looks=ttk.Style()
-        looks.theme_use('alt')
-        self.grid()
-
-        self.chose=ttk.Frame(self)
-        self.status_label=ttk.Label(self)
-        self.frame1=ttk.Frame(self)
-        self.choose_menu()
-
-    def frames(self,frame_name, row_pos, column_pos, frame_width, frame_height):
-        '''The function creates ttk frames as the program will
-        be repeatedly distring and creating new one '''
-        frame_name = ttk.Frame(self)
-        frame_name.configure(width=frame_width, height=frame_height)
-        frame_name.grid(row=row_pos, column=column_pos)
+#declaring colors
+white=(255,255,255)
+black=(0,0,0)
+lime=(153,255,153)
+light_green=(159,255,128)
+intro_back=(236,255,230)
+green=(94,232,48)
+#initialising pygame window
+gameDisplay = pygame.display.set_mode((display_width,display_height))
+pygame.display.set_caption('TicTacToe')
+clock=pygame.time.Clock()
 
 
-    def labels(self,label_name, label_text, row_pos, column_pos, first):
-        '''The function is helpful to create labels
-        as during program run they will be destroyed continously'''
-        if not first:
-            label_name = ttk.Label(self, text=label_text)
-            label_name.grid(row=row_pos, column=column_pos)
+class functions:
+    def text_objects(self,text,font):
+        textSurface = font.render(text, True, black)
+        return textSurface, textSurface.get_rect()
 
+    def message_display(self,text,width_centre,height_center,size):
+        
+        message_font=pygame.font.SysFont('Alef.ttf',size)
+        TextSurf , TextRect = self.text_objects(text,message_font)
+        TextRect.center=((width_centre),(height_center))
+        gameDisplay.blit(TextSurf,TextRect)
 
-    def register(self,index):
-        if self.values[index]=="  ":
-            self.values[index]=self.play.marker[self.play.move]
-            self.play.check_winner()
-        if self.play.playing:
-            self.show()    
+    def button(self,message,x,y,hi,wi,ic,ac,pc,size,action,val=None):
+        mouse = pygame.mouse.get_pos()
+        click = pygame.mouse.get_pressed()
+        x=x/2
+        y=y/2
 
-    def show(self):
-        self.chose.destroy()
-        self.play.update()
-        self.values=self.play.grid
-        self.frames(self.frame1,0,0,self.display_width,self.display_height-50)
-        # ===========row 1============
-        self.block1 = ttk.Button(self.frame1, text=self.values[0])
-        self.block1.grid(row=0, column=0)
-
-        self.block2 = ttk.Button(self.frame1, text=self.values[1])
-        self.block2.grid(row=0, column=1)
-
-        self.block3 = ttk.Button(self.frame1, text=self.values[2])
-        self.block3.grid(row=0, column=2)
-        # ===========row 2============
-        self.block4 = ttk.Button(self.frame1, text=self.values[3])
-        self.block4.grid(row=1, column=0)
-
-        self.block5 = ttk.Button(self.frame1, text=self.values[4])
-        self.block5.grid(row=1, column=1)
-
-        self.block6 = ttk.Button(self.frame1, text=self.values[5])
-        self.block6.grid(row=1, column=2)
-        # ===========row 3============
-        self.block7 = ttk.Button(self.frame1, text=self.values[6])
-        self.block7.grid(row=2, column=0)
-
-        self.block8 = ttk.Button(self.frame1, text=self.values[7])
-        self.block8.grid(row=2, column=1)
-
-        self.block9 = ttk.Button(self.frame1, text=self.values[8])
-        self.block9.grid(row=2, column=2)
-
-
-
-    def launch(self):
-        self.play=game(self.mode,self.marker)
-        self.show()
-
-
-    def config(self,a,stat):
-        if stat:
-            self.mode=a
+        if x+wi > mouse[0] > x and y+hi > mouse[1] > y:
+            pygame.draw.rect(gameDisplay, ac,(x,y,wi,hi))
+            if click[0]:
+                pygame.draw.rect(gameDisplay, pc,(x,y,wi,hi))
+                action(val)
         else:
-            self.marker=a
-        if self.marker and self.mode:
-            self.launch()
+            pygame.draw.rect(gameDisplay,ic,(x,y,wi,hi))
+        self.message_display(message,x+(wi/2),y+(hi/2),size)
 
-    def choose_menu(self):
-        ''' The function is ran once to get the option of PVP or PVC
-        marker the players chosses'''
-        self.mo=None
-        self.mar=None
-        self.frames(self.chose, 0, 0, self.display_width, self.display_height-50)
-        self.labels(self.status_label, 'MENU', 1, 0, True)
-        get_mode1 = ttk.Radiobutton(
-            self.chose, text="Player vs Player", value=1, variable=self.mo, command=lambda: self.config(1, True))
-        get_mode2 = ttk.Radiobutton(
-            self.chose, text="Player vs Computer", value=2, variable=self.mo, command=lambda: self.config(2, True))
-        get_mode1.grid(row=0, column=0)
-        get_mode2.grid(row=0, column=1)
 
-        text = ttk.Label(self.chose, text='Player 1 select:')
-        text.grid(row=1, column=0)
-        get_marker1 = ttk.Radiobutton(
-            self.chose, text="X", value=1, variable=self.mar, command=lambda: self.config(1, False))
-        get_marker2 = ttk.Radiobutton(
-            self.chose, text="O", value=2, variable=self.mar, command=lambda: self.config(2, False))
-        get_marker1.grid(row=1, column=1)
-        get_marker2.grid(row=1, column=2)
+def assign(a):
+    global marker,mode
+    if a == 0:
+        mode=1
+    elif a==1:
+        mode=2
+    elif a==2:
+        marker=1
+    elif a==3:
+        marker=2
+    if marker and mode:
+        game_loop()
 
-    def loop(self):
-        self.mainloop()
 
-app = graphic()
-app.loop()
+    
+
+
+def game_intro():
+    while True:
+        for event in pygame.event.get():
+            if event.type==pygame.QUIT:
+                pygame.quit()
+                quit()
+
+        
+        gameDisplay.fill(intro_back)
+        #intro text
+        func.message_display("Choose mode:",90,50,30)
+        func.button('PVP',95,155,30,80,lime,light_green,green,20,assign,0)
+        func.button('PVC',310,155,30,80,lime,light_green,green,20,assign,1)
+        
+        func.message_display('Palyer 1 marker:',100,150,30)
+        func.button('X',95,355,30,80,lime,light_green,green,20,assign,2)
+        func.button('O',310,355,30,80,lime,light_green,green,20,assign,3)
+
+        pygame.display.update()
+        clock.tick(60)
+
+
+
+
+def game_loop():
+    global mode,marker
+    app = game(mode,marker)
+    st=5
+    cs=(display_width-(4*st))/3
+
+    def update(a):
+        app.update(a[0],a[1])
+        
+    def print_grid():
+        #creating spaces in lines to be buttons
+        val = app.grid
+        for i in range(3):
+            for j in range(3):
+                func.button(val[j][i],(st*(i+1)+cs*i)*2,(st*(j+1)+cs*j)*2,cs,cs,white,white,white,80,update,(j,i))
+        
+        #vertical
+        pygame.draw.line(gameDisplay,(0,0,0),(cs+st,0),(cs+st,cs*3+st*3),st)
+        pygame.draw.line(gameDisplay,(0,0,0),(cs*2+st*3,0),(cs*2+st*3,cs*3+st*3),st)
+        #horizontal
+        pygame.draw.line(gameDisplay,(0,0,0),(0,cs+st),(cs*3+st*3,cs+st),st)
+        pygame.draw.line(gameDisplay,(0,0,0),(0,cs*2+st*3),(cs*3+st*3,cs*2+st*3),st)
+
+    def get_status():
+        msg=app.status()
+        func.message_display(msg,((display_height-200)/2),315,30)
+        
+
+    
+    while True:
+        for event in pygame.event.get():
+            if event.type==pygame.QUIT:
+                pygame.quit()
+                quit()
+
+
+        gameDisplay.fill(white)
+        print_grid()
+        get_status()
+        pygame.display.update()
+        clock.tick(60)
+
+func=functions()
+game_intro()      
