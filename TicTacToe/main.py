@@ -1,6 +1,9 @@
 import pygame
 import time
+
 from gameplay import game
+
+#pylint: disable=no-member
 
 pygame.font.init()
 #variable used
@@ -51,6 +54,11 @@ class functions:
 
 
 def assign(a):
+    def wait():
+        gameDisplay.fill(light_green)
+        pygame.display.update()
+        time.sleep(1)
+        game_loop()
     global marker,mode
     if a == 0:
         mode=1
@@ -61,7 +69,8 @@ def assign(a):
     elif a==3:
         marker=2
     if marker and mode:
-        game_loop()
+        wait()
+        
 
 
     
@@ -97,8 +106,10 @@ def game_loop():
     st=5
     cs=(display_width-(4*st))/3
 
+
     def update(a):
-        app.update(a[0],a[1])
+        if app.playing:
+            app.update(a[0],a[1])
         
     def print_grid():
         #creating spaces in lines to be buttons
@@ -115,7 +126,7 @@ def game_loop():
         pygame.draw.line(gameDisplay,(0,0,0),(0,cs*2+st*3),(cs*3+st*3,cs*2+st*3),st)
 
     def get_status():
-        msg=app.status()
+        msg=app.stat
         func.message_display(msg,((display_height-200)/2),315,30)
         
 
@@ -128,8 +139,10 @@ def game_loop():
 
 
         gameDisplay.fill(white)
+        
         print_grid()
         get_status()
+        
         pygame.display.update()
         clock.tick(60)
 
