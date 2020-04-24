@@ -1,6 +1,5 @@
 import pygame
 import time
-
 from gameplay import game
 
 #pylint: disable=no-member
