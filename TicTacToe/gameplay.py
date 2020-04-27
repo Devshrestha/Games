@@ -21,8 +21,7 @@ class game:
             self.marker = ['', 'X', 'O']
         else:
             self.marker = ['', 'O', 'X']
-        self.scores = {self.marker[1]: 1, self.marker[2]: -1, 'tie': 0}
-        print(self.scores['X'])
+        self.scores = {self.marker[2]: 1, self.marker[1]: -1, 'tie': 0}
 
     def minimax(self, board, depth, ismaximizing):
 
@@ -60,6 +59,7 @@ class game:
                 self.available.remove((i, j))
                 self.turn = 1
         if self.turn == 1:
+            print('yes')
             best_score = -infinity
             for i in range(3):
                 for j in range(3):

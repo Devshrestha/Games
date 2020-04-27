@@ -103,7 +103,6 @@ def game_loop():
     cs = (display_width-(4*st))/3
 
     def update(a):
-        print(app.grid)
         if app.playing:
             if mode == 1:
                 app.update(a[0], a[1])
