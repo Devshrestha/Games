@@ -13,7 +13,7 @@ class game:
         self.mode = mode
         self.stat = "Player1 turn "
         self.winner = None
-        self.win=None
+        self.win = None
         self.available = [(0, 0), (0, 1), (0, 2), (1, 0),
                           (1, 1), (1, 2), (2, 0), (2, 1), (2, 2)]
 
@@ -21,65 +21,74 @@ class game:
             self.marker = ['', 'X', 'O']
         else:
             self.marker = ['', 'O', 'X']
-        self.scores = {self.marker[2]: 10,self.marker[1]: -10, 'tie': 0}
+        self.scores = {self.marker[2]: 10, self.marker[1]: -10, 'tie': 0}
 
-    def minimax(self, depth, ismaximizing):
-
-        self.ai_check_winner()
-        if self.win != None:
-            
-            return self.scores[self.win]
+    def minimax(self, a, depth, ismaximizing):
+        print(self.grid)
+        board=a.copy()
+        stop=self.ai_check_winner(board)
+        if stop  == self.marker[1]:
+            return -10
+        elif stop==self.marker[2]:
+            return 10
+        elif stop=='tie':
+            return 0
 
         if ismaximizing:
             best_score = -infinity
             for i in range(3):
                 for j in range(3):
-                    if self.grid[i][j] == '  ':
-                        self.grid[i][j] = self.marker[2]
-                        score = self.minimax( depth+1, False)
-                        print('ai',score)
-                        self.grid[i][j] = "  "
-                        
-                        best_score = max(score, best_score)
-                        
+                    if board[i][j] == '  ':
+
+                        board[i][j] = self.marker[2]
+                        score_a = self.minimax(board, depth+1, False)
+
+                        best_score = max(score_a, best_score)
+
             return best_score
         else:
-            best_score = infinity
+
+            worst_score = infinity
             for i in range(3):
                 for j in range(3):
-                    if self.grid[i][j] == "  ":
-                        self.grid[i][j] = self.marker[1]
-                        score = self.minimax( depth+1, True)
-                        self.grid[i][j] = '  '
-                        print('p',score)
-                        best_score = min(score, best_score)
-                        
-            return best_score
+                    if board[i][j] == "  ":
+                        board[i][j] = self.marker[1]
+                        score_p = self.minimax(board, depth+1, True)
+
+                        worst_score = min(score_p, worst_score)
+
+            return worst_score
+
+    def chosse_bests_move(self,copy_board):
+        bestscore = -infinity
+        for i in range(3):
+            for j in range(3):
+                if copy_board[i][j] == '  ':
+
+                    copy_board[i][j] = self.marker[2]
+                    score = self.minimax(copy_board, 0, False)
+                    copy_board[i][j] = '  '
+                    if score > bestscore:
+                        bestscore = score
+                        best_move = (i, j)
+        return best_move
 
     def ai_update(self, i, j):
-        
-        if self.turn==2:
-            bestscore=-infinity
-            for i in range(3):
-                for j in range(3):
-                    if self.grid[i][j]=='  ':
-                        self.grid[i][j]=self.marker[2]
-                        score=self.minimax(0,False)
-                        self.grid[i][j]='  '
-                        if score>bestscore:
-                            bestscore=score
-                            move=(i,j)
-
-            self.grid[move[0]][move[1]]=self.marker[2]
-            self.available.remove(move)                
-            self.turn=1
-        else :
-            if (i,j) in self.available:
-                self.grid[i][j]=self.marker[1]
-                self.available.remove((i,j))
-                self.turn=2
-                
         self.check_winner()
+        if self.winner != None:
+            return
+        if self.turn == 2:
+            a=self.grid.copy()
+            move=self.chosse_bests_move(a[:])    
+            self.grid[move[0]][move[1]] = self.marker[2]
+            self.available.remove(move)
+            self.turn = 1
+
+        else:
+            if (i, j) in self.available:
+                self.grid[i][j] = self.marker[1]
+                self.available.remove((i, j))
+                self.turn = 2
 
     def update(self, j, i):
         if (j, i) in self.available:
@@ -144,31 +153,30 @@ class game:
             self.the_winner('t')
             self.playing = False
 
-    def ai_check_winner(self):
+    def ai_check_winner(self,board):
             # across
-            for i in range(3):
-                if (self.grid[i][0] == self.grid[i][1] == self.grid[i][2]) and self.grid[i][0] != '  ':
-                    self.win = self.grid[i][0]
-    
-            # down
-            for i in range(3):
-                if (self.grid[0][i] == self.grid[1][i] == self.grid[2][i]) and self.grid[i][i] != '  ':
-                    self.win = self.grid[0][i]
-                    
-            # diagnal
-            if (self.grid[0][0] == self.grid[1][1] == self.grid[2][2])and self.grid[0][0] != '  ':
-                self.win = self.grid[1][1]
-                
+        for i in range(3):
+            if (board[i][0] == board[i][1] == board[i][2]) and board[i][0] != '  ':
+                return board[i][0]
 
-            if (self.grid[2][0] == self.grid[1][1] == self.grid[0][2])and self.grid[1][1] != '  ':
-                self.win = self.grid[1][1]
-                
+        # down
+        for i in range(3):
+            if (board[0][i] == board[1][i] == board[2][i]) and board[i][i] != '  ':
+                return board[0][i]
 
-            # tie
-            if len(self.available) == 0 and self.winner == None:
-                self.win = 'tie'
+        # diagnal
+        if (board[0][0] == board[1][1] == board[2][2])and board[0][0] != '  ':
+            return board[1][1]
 
+        if (board[2][0] == board[1][1] == board[0][2])and board[1][1] != '  ':
+            return board[1][1]
 
+        # tie
+        set_flag=0
+        for i in range(3):
+            for j in range(3):
+                if board[i][j]=='  ':
+                    set_flag=1
         
-
-        
+        if set_flag == 0:
+            return 'tie'
