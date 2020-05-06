@@ -11,16 +11,17 @@ display_height = 700
 jet_width = 70
 jet_height = 80
 back = [None]*62
-x_position=frame_count=b_count=back_counter = 0
+x_position = frame_count = b_count = back_counter = 0
 p_bullet_x = []
 p_bullet_y = []
+game_rate = 30
 
 # defining colors
 black = (0, 0, 0)
 white = (255, 255, 255)
 blue = (10, 10, 250)
 yellow = (250, 250, 10)
-orange=(255,133,52)
+orange = (255, 133, 52)
 # initializing
 # pylint: disable=no-member
 gameDisplay = pygame.display.set_mode((display_width, display_height))
@@ -54,56 +55,91 @@ def message_display(text, locx, locy, w, h, size, color=black):
 
 
 def soft_set():
-    global x_position,frame_count,b_count,back_counter 
-    x_position=frame_count=b_count=back_counter = 0
-    player.draw_position_x=265
-
+    global x_position, frame_count, b_count, back_counter
+    x_position = frame_count = b_count = back_counter = 0
+    player.draw_position_x = 265
 
 
 def hard_set():
     pass
 
-def draw_simple_opponent():
-    gameDisplay.blit(wave.img,(150,50))
-    gameDisplay.blit(wave.img,(350,50))
-    gameDisplay.blit(wave.img,(250,50))
+def opponet_fire(fire_list,object):
+    for i in range(len(object.the_wave)):
+        if i in fire_list:
+            pass
+
+
+
+def draw_simple_opponent(object):
+    global p_bullet_y
+    temp=[]
+    o_fire=[]
+    for i in range(len(object.the_wave)):
+        if object.the_wave[i][2] > 0:
+            gameDisplay.blit(
+                object.img, (object.the_wave[i][0], object.the_wave[i][1]))
+
+    if frame_count % 12 == 0:
+        object.strafe()
+    for i in range(len(object.the_wave)):
+        object.the_wave[i][0]=object.the_wave[i][0]+object.strafe_value
+
+    damage=object.collision_check(p_bullet_x,p_bullet_y)
+    for i in damage:
+        if i not in temp:
+            temp.append(i)
+    object.damage_enemy(temp,player.bullet_count)
+    for i in range(len(temp)):
+        a = temp[i][1]
+        p_bullet_y[a]=-100
+    if frame_count % int(1.5*game_rate) == 0:
+        o_fire=object.wave_fire()
+
+    opponet_fire(o_fire.copy(),object)
+
+
+
+
 def player_bullets(pos, pos_y, step):
-    dis =5
+    dis = 5#if changed must also tweek in simple_opponnent collision()
     l = 10
-  
+
     for i in range(len(pos_y)):
         pos_y[i] -= 5
-        
+
     player.fire()
     no = player.bullet_count
     if no == 1:
 
-        if len(pos)>16:
-            for i in range(len(pos)-16,len(pos)):
+        if len(pos) > 16:
+        
+            for i in range(len(pos)-16, len(pos)):
                 pygame.draw.line(gameDisplay, yellow,
-                         (pos[i], pos_y[i] - dis), (pos[i], pos_y[i] - dis-l), 3)
+                                 (pos[i], pos_y[i] - dis), (pos[i], pos_y[i] - dis-l), 3)
+                
         else:
 
             for i in range(len(pos)):
                 pygame.draw.line(gameDisplay, yellow,
-                         (pos[i], pos_y[i] - dis), (pos[i], pos_y[i] - dis-l), 3)
+                                 (pos[i], pos_y[i] - dis), (pos[i], pos_y[i] - dis-l), 3)
 
-    if no ==2:
-        if len(pos)>16:
-            for i in range(len(pos)-16,len(pos)):
+    if no == 2:
+        if len(pos) > 16:
+            for i in range(len(pos)-16, len(pos)):
                 pygame.draw.line(gameDisplay, orange,
-                         (pos[i]-2, pos_y[i] - dis), (pos[i]-2, pos_y[i] - dis-l), 3)
-            for i in range(len(pos)-16,len(pos)):
+                                 (pos[i]-2, pos_y[i] - dis), (pos[i]-2, pos_y[i] - dis-l), 3)
+            for i in range(len(pos)-16, len(pos)):
                 pygame.draw.line(gameDisplay, orange,
-                         (pos[i]+2, pos_y[i] - dis), (pos[i]+2, pos_y[i] - dis-l), 3)
+                                 (pos[i]+2, pos_y[i] - dis), (pos[i]+2, pos_y[i] - dis-l), 3)
         else:
 
             for i in range(len(pos)):
                 pygame.draw.line(gameDisplay, orange,
-                         (pos[i]-2, pos_y[i] - dis), (pos[i]-2, pos_y[i] - dis-l), 3)
+                                 (pos[i]-2, pos_y[i] - dis), (pos[i]-2, pos_y[i] - dis-l), 3)
             for i in range(len(pos)):
                 pygame.draw.line(gameDisplay, orange,
-                         (pos[i]+2, pos_y[i] - dis), (pos[i]+2, pos_y[i] - dis-l), 3)
+                                 (pos[i]+2, pos_y[i] - dis), (pos[i]+2, pos_y[i] - dis-l), 3)
+
 
 def is_colliding():
     collison = False
@@ -121,8 +157,8 @@ def is_colliding():
 
 
 def game_loop():
-    global back_counter, x_position, p_bullet,frame_count,b_count
-    
+    global back_counter, x_position, p_bullet, frame_count, b_count
+
     while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -143,19 +179,20 @@ def game_loop():
         gameDisplay.blit(back[back_counter], (0, 0))
         gameDisplay.blit(player.player_img,
                          (player.draw_position_x, player.draw_position_y))
-        draw_simple_opponent()
-        if b_count % 8 == 0:
+
+        draw_simple_opponent(wave)
+        if b_count % (1*game_rate) == 0:
             p_bullet_x.append(
                 player.draw_position_x+(player.img_width/2))
             p_bullet_y.append(600)
+            
         player_bullets(p_bullet_x, p_bullet_y, frame_count)
         # create a background gif
         back_counter += 1
         if back_counter > 61:
             back_counter = 0
-
         frame_count += 1
-        b_count+=1
+        b_count += 1
         # collison check for player
         is_colliding()
         pygame.display.update()
@@ -163,6 +200,8 @@ def game_loop():
 
 
 load_background()
-wave=low()
+wave = low()
+wave.spawn_wave()
+wave.pattern()
 player = player_ship()
 game_loop()

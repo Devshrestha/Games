@@ -10,8 +10,9 @@ class player_ship:
         self.img_height = 80
         self.draw_position_x = 265
         self.draw_position_y = 600
+        self.bullet_count = 1
         self.lives = 5
 
     def fire(self):
         self.damage = 5
-        self.bullet_count = 1
+        
