@@ -12,7 +12,7 @@ class player_ship:
         self.draw_position_y = 600
         self.bullet_count = 1
         self.lives = 5
+        self.health = 40
 
     def fire(self):
         self.damage = 5
-        

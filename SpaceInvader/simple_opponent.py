@@ -76,6 +76,8 @@ class low():
             self.ol.append(random.choice(
                 [[self.lay4_2[:2]], [[0, 1000]], [[0, 1000]]]))
 
+            self.ol2 = self.ol.copy()
+
     def pattern_T(self):
         self.layers = (self.no//2)+1
         gap = 40
@@ -110,7 +112,7 @@ class low():
             self.ol.append(random.choice(
                 [[self.lay4_2[:2]], [[0, 1000]], [[0, 1000]]]))
 
-        self.opponent_fire_list = [None, None]*len(self.the_wave)
+        self.ol2 = self.ol.copy()
 
     def pattern_Z(self):
         self.layers = (self.no//2)+1
@@ -146,7 +148,7 @@ class low():
             self.ol.append(random.choice(
                 [[self.lay4_2[:2]], [[0, 1000]], [[0, 1000]]]))
 
-        self.opponent_fire_list = [None, None]*len(self.the_wave)
+        self.ol2 = self.ol.copy()
 
     def pattern_S(self):
         self.layers = (self.no//2)+1
@@ -182,7 +184,7 @@ class low():
             self.ol.append(random.choice(
                 [[self.lay4_2[:2]], [[0, 1000]], [[0, 1000]]]))
 
-        self.opponent_fire_list = [None, None]*len(self.the_wave)
+        self.ol2 = self.ol.copy()
 
     def get_pattern(self, number):
         patt = [self.pattern_C, self.pattern_T, self.pattern_Z, self.pattern_S]

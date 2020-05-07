@@ -68,17 +68,39 @@ def hard_set():
 def opponet_fire(fire_list, object):
     global a
     h = object.img_height
+    # add new bullet to randomly to random no of enemy
     if frame_count % 30 == 0:
         for i in range(len(object.the_wave)):
             if i in fire_list:
                 object.ol[i].append(object.the_wave[i][:2])
+                object.ol[i].append(object.the_wave[i][:2])
+
+    # display enemy left and right bullet
     for i in range(len(object.the_wave)):
+        # for left side
         for j in range(len(object.ol[i])):
             if object.ol[i][j][1] < 1000:
                 pygame.draw.line(gameDisplay, red,
                                  (object.ol[i][j][0], object.ol[i][j][1]+h), (object.ol[i][j][0], object.ol[i][j][1]+5+h), 3)
+        # for right side
+        for j in range(len(object.ol2[i])):
+            if object.ol2[i][j][1] < 1000:
                 pygame.draw.line(gameDisplay, red,
-                                 (object.ol[i][j][0]+h, object.ol[i][j][1]+h), (object.ol[i][j][0]+h, object.ol[i][j][1]+5+h), 3)
+                                 (object.ol2[i][j][0]+h, object.ol2[i][j][1]+h), (object.ol2[i][j][0]+h, object.ol2[i][j][1]+5+h), 3)
+    # collision check of enemy bullets with player
+    for i in range(len(object.the_wave)):
+        for j in range(len(object.ol[i])):
+            if object.ol[i][j][1] < 1000:
+                if object.ol[i][j][1] < player.draw_position_y+player.img_height and object.ol[i][j][1] >= player.draw_position_y:
+                    if object.ol[i][j][0] < player.draw_position_x+player.img_width and object.ol[i][j][0] >= player.draw_position_x:
+                        player.health -= 5
+                        object.ol[i][j][1] = 1100
+
+                    if object.ol2[i][j][0]+object.img_width < player.draw_position_x+player.img_width and object.ol2[i][j][0]+object.img_width >= player.draw_position_x:
+                        player.health -= 5
+                        object.ol2[i][j][1] = 1100
+
+    # update the position of bullet with every frame
     for i in range(len(object.the_wave)):
         for j in range(len(object.ol[i])):
             object.ol[i][j][1] = object.ol[i][j][1]+5
