@@ -12,7 +12,7 @@ class low():
         self.img_width = 60
         self.img_height = 60
         self.starfe_stage = 0
-        self.strafe_value=0
+        self.strafe_value = 0
 
     def strafe(self):
         if self.starfe_stage in [-1, 0, 1]:
@@ -39,7 +39,6 @@ class low():
             if self.starfe_stage == 2:
                 self.strafe_value = -2
                 self.starfe_stage = 0
-        
 
     def pattern_C(self):
         self.layers = (self.no//2)+1
@@ -50,13 +49,21 @@ class low():
         self.lay2_2 = [(self.display_width-self.img_width) /
                        2+(gap*2), gap*2, 20]
         self.the_wave = [self.head, self.lay2_1, self.lay2_2]
+        self.ol = [random.choice([[self.head[:2]], [[0, 1000]], [[0, 1000]]]),
+                   random.choice([[self.lay2_1[:2]], [[0, 1000]], [[0, 1000]]]), random.choice([[self.lay2_2[:2]], [[0, 1000]], [[0, 1000]]])]
         if self.layers > 2:
             self.lay3_1 = [(self.display_width-self.img_width) /
                            2-(gap*4), gap*4, 20]
             self.the_wave.append(self.lay3_1)
+
             self.lay3_2 = [(self.display_width-self.img_width) /
                            2+(gap*4), gap*4, 20]
             self.the_wave.append(self.lay3_2)
+            self.ol.append(random.choice(
+                [[self.lay3_1[:2]], [[0, 1000]], [[0, 1000]]]))
+            self.ol.append(random.choice(
+                [[self.lay3_2[:2]], [[0, 1000]], [[0, 1000]]]))
+
         if self.layers > 3:
             self.lay4_1 = [(self.display_width-self.img_width) /
                            2-(gap*6), gap*6, 20]
@@ -64,8 +71,10 @@ class low():
             self.lay4_2 = [(self.display_width-self.img_width) /
                            2+(gap*6), gap*6, 20]
             self.the_wave.append(self.lay4_2)
-
-        self.opponent_fire_list = [None,None]*len(self.the_wave)
+            self.ol.append(random.choice(
+                [[self.lay4_1[:2]], [[0, 1000]], [[0, 1000]]]))
+            self.ol.append(random.choice(
+                [[self.lay4_2[:2]], [[0, 1000]], [[0, 1000]]]))
 
     def pattern_T(self):
         self.layers = (self.no//2)+1
@@ -76,6 +85,8 @@ class low():
         self.lay2_2 = [(self.display_width-self.img_width) /
                        2+(gap*2), gap*(self.no-2), 20]
         self.the_wave = [self.head, self.lay2_1, self.lay2_2]
+        self.ol = [random.choice([[self.head[:2]], [[0, 1000]], [[0, 1000]]]),
+                   random.choice([[self.lay2_1[:2]], [[0, 1000]], [[0, 1000]]]), random.choice([[self.lay2_2[:2]], [[0, 1000]], [[0, 1000]]])]
         if self.layers > 2:
             self.lay3_1 = [(self.display_width-self.img_width) /
                            2-(gap*4), gap*(self.no-4), 20]
@@ -83,6 +94,10 @@ class low():
             self.lay3_2 = [(self.display_width-self.img_width) /
                            2+(gap*4), gap*(self.no-4), 20]
             self.the_wave.append(self.lay3_2)
+            self.ol.append(random.choice(
+                [[self.lay3_1[:2]], [[0, 1000]], [[0, 1000]]]))
+            self.ol.append(random.choice(
+                [[self.lay3_2[:2]], [[0, 1000]], [[0, 1000]]]))
         if self.layers > 3:
             self.lay4_1 = [(self.display_width-self.img_width) /
                            2-(gap*6), gap*(self.no-6), 20]
@@ -90,8 +105,12 @@ class low():
             self.lay4_2 = [(self.display_width-self.img_width) /
                            2+(gap*6), gap*(self.no-6), 20]
             self.the_wave.append(self.lay4_2)
+            self.ol.append(random.choice(
+                [[self.lay4_1[:2]], [[0, 1000]], [[0, 1000]]]))
+            self.ol.append(random.choice(
+                [[self.lay4_2[:2]], [[0, 1000]], [[0, 1000]]]))
 
-        self.opponent_fire_list = [None,None]*len(self.the_wave)
+        self.opponent_fire_list = [None, None]*len(self.the_wave)
 
     def pattern_Z(self):
         self.layers = (self.no//2)+1
@@ -102,6 +121,8 @@ class low():
         self.lay2_2 = [(self.display_width-self.img_width) /
                        2+(gap*2), 60, 20]
         self.the_wave = [self.head, self.lay2_1, self.lay2_2]
+        self.ol = [random.choice([[self.head[:2]], [[0, 1000]], [[0, 1000]]]),
+                   random.choice([[self.lay2_1[:2]], [[0, 1000]], [[0, 1000]]]), random.choice([[self.lay2_2[:2]], [[0, 1000]], [[0, 1000]]])]
         if self.layers > 2:
             self.lay3_1 = [(self.display_width-self.img_width) /
                            2-(gap*4), 120, 20]
@@ -109,6 +130,10 @@ class low():
             self.lay3_2 = [(self.display_width-self.img_width) /
                            2+(gap*4), 120, 20]
             self.the_wave.append(self.lay3_2)
+            self.ol.append(random.choice(
+                [[self.lay3_1[:2]], [[0, 1000]], [[0, 1000]]]))
+            self.ol.append(random.choice(
+                [[self.lay3_2[:2]], [[0, 1000]], [[0, 1000]]]))
         if self.layers > 3:
             self.lay4_1 = [(self.display_width-self.img_width) /
                            2-(gap*6), 60, 20]
@@ -116,8 +141,12 @@ class low():
                            2+(gap*6), 60, 20]
             self.the_wave.append(self.lay4_1)
             self.the_wave.append(self.lay4_2)
+            self.ol.append(random.choice(
+                [[self.lay4_1[:2]], [[0, 1000]], [[0, 1000]]]))
+            self.ol.append(random.choice(
+                [[self.lay4_2[:2]], [[0, 1000]], [[0, 1000]]]))
 
-        self.opponent_fire_list = [None,None]*len(self.the_wave)
+        self.opponent_fire_list = [None, None]*len(self.the_wave)
 
     def pattern_S(self):
         self.layers = (self.no//2)+1
@@ -128,6 +157,8 @@ class low():
         self.lay2_2 = [(self.display_width-self.img_width) /
                        2+(gap*2), 60, 20]
         self.the_wave = [self.head, self.lay2_1, self.lay2_2]
+        self.ol = [random.choice([[self.head[:2]], [[0, 1000]], [[0, 1000]]]),
+                   random.choice([[self.lay2_1[:2]], [[0, 1000]], [[0, 1000]]]), random.choice([[self.lay2_2[:2]], [[0, 1000]], [[0, 1000]]])]
         if self.layers > 2:
             self.lay3_1 = [(self.display_width-self.img_width) /
                            2-(gap*4), 60, 20]
@@ -135,6 +166,10 @@ class low():
             self.lay3_2 = [(self.display_width-self.img_width) /
                            2+(gap*4), 60, 20]
             self.the_wave.append(self.lay3_2)
+            self.ol.append(random.choice(
+                [[self.lay3_1[:2]], [[0, 1000]], [[0, 1000]]]))
+            self.ol.append(random.choice(
+                [[self.lay3_2[:2]], [[0, 1000]], [[0, 1000]]]))
         if self.layers > 3:
             self.lay4_1 = [(self.display_width-self.img_width) /
                            2-(gap*6), 60, 20]
@@ -142,51 +177,52 @@ class low():
             self.lay4_2 = [(self.display_width-self.img_width) /
                            2+(gap*6), 60, 20]
             self.the_wave.append(self.lay4_2)
+            self.ol.append(random.choice(
+                [[self.lay4_1[:2]], [[0, 1000]], [[0, 1000]]]))
+            self.ol.append(random.choice(
+                [[self.lay4_2[:2]], [[0, 1000]], [[0, 1000]]]))
 
-        self.opponent_fire_list = [None,None]*len(self.the_wave)
+        self.opponent_fire_list = [None, None]*len(self.the_wave)
 
     def get_pattern(self, number):
         patt = [self.pattern_C, self.pattern_T, self.pattern_Z, self.pattern_S]
-        #self.pattern = random.choice(patt)
-        self.pattern = self.pattern_S
+        self.pattern = random.choice(patt)
+        #self.pattern = self.pattern_C
         return
 
     def draw_check(self):
-        a=[]
-        temp=[]
-        temp2=[]
+        a = []
+        temp = []
+        temp2 = []
         for i in range(len(self.the_wave)):
-            if self.the_wave[i][2]>0:
+            if self.the_wave[i][2] > 0:
                 a.append(i)
 
         for i in range(len(self.the_wave)):
             if i in a:
                 temp.append(self.the_wave[i])
-                temp2.append(self.opponent_fire_list[i])
+                # temp2.append(self.opponent_fire_list[i])
 
-        self.the_wave=temp
-        self.opponent_fire_list=temp2
-        
+        self.the_wave = temp
+        #self.opponent_fire_list = temp2
 
-        
     def wave_fire(self):
-        a_list=[]
-        fire_num = random.randint(0,len(self.the_wave))
+        a_list = []
+        fire_num = random.randint(0, len(self.the_wave))
         for _ in range(fire_num):
             while True:
-                a = random.randint(0,fire_num)
+                a = random.randint(0, fire_num)
                 if a not in a_list:
                     a_list.append(a)
                     break
-            
+
         return a_list
 
+    def damage_enemy(self, array, no):
 
-    def damage_enemy(self,array,no):
-        
         for j in range(len(array)):
             a = array[j][0]
-            self.the_wave[a][2]=self.the_wave[a][2]-5*(no)
+            self.the_wave[a][2] = self.the_wave[a][2]-5*(no)
 
         self.draw_check()
 
@@ -194,34 +230,36 @@ class low():
         self.no = random.choice([3,  5, 5, 5,  7, 7])
         self.get_pattern(self.no)
 
-    def collision_check(self,bullet_x,bullet_y):
+    def collision_check(self, bullet_x, bullet_y):
         dis = 5
         l = 10
-        intersect=[]
+        intersect = []
         for k in range(len(self.the_wave)):
-            if True: # add distroyed condition here
-                a=[]
-                b=[]
-                
+            if True:  # add distroyed condition here
+                a = []
+                b = []
+
                 for i in range(len(bullet_y)):
-                    y=bullet_y[i]-l-dis
-                    if y>self.the_wave[k][1] and y<self.the_wave[k][1]+self.img_height:
+                    y = bullet_y[i]-l-dis
+                    if y > self.the_wave[k][1] and y < self.the_wave[k][1]+self.img_height:
                         if i not in b:
                             b.append(i)
                 for j in range(len(bullet_x)):
-                    x=bullet_x[j]
-                    if x<self.the_wave[k][0]+self.img_width and x>self.the_wave[k][0]:
+                    x = bullet_x[j]
+                    if x < self.the_wave[k][0]+self.img_width and x > self.the_wave[k][0]:
                         if j not in a:
                             a.append(j)
-                
+
                 for i in range(len(a)):
                     if a[i] in b and a[i] not in intersect:
-                        intersect.append([k,a[i]])
+                        intersect.append([k, a[i]])
                 for i in range(len(b)):
                     if b[i] in a and b[i] not in intersect:
-                        intersect.append([k,b[i]])
+                        intersect.append([k, b[i]])
 
         return intersect
+
+
 if __name__ == "__main__":
 
     a = low()
