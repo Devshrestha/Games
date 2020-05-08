@@ -15,7 +15,6 @@ x_position = frame_count = b_count = back_counter = 0
 p_bullet_x = []
 p_bullet_y = []
 game_rate = 30
-a = 0
 # defining colors
 black = (0, 0, 0)
 white = (255, 255, 255)
@@ -110,10 +109,39 @@ def draw_simple_opponent(object):
     global p_bullet_y
     temp = []
     o_fire = []
+    image = object.img
+    #draw simple enemy
     for i in range(len(object.the_wave)):
+        if object.the_wave[i][2]==15:
+            image = object.stage[1]
+        elif object.the_wave[i][2]==10:
+            image = object.stage[2]
+        elif object.the_wave[i][2]==5:
+            image =object.stage[3]
+
         if object.the_wave[i][2] > 0:
             gameDisplay.blit(
-                object.img, (object.the_wave[i][0], object.the_wave[i][1]))
+                image, (object.the_wave[i][0], object.the_wave[i][1]))
+            image=object.stage[0]
+    # draw blast animation for enemy
+    for j in range(len(object.blast)):
+        if object.blast[j][1]==2:
+            if object.blast[j][0][2]==0:
+                object.blast[j][2]=frame_count
+                object.blast[j][0][2]=-5
+            gameDisplay.blit(
+                object.after_end[0], (object.blast[j][0][0]+15, object.blast[j][0][1]-5))
+        if object.blast[j][2]+5 == frame_count:
+            object.blast[j][1]=1
+        if object.blast[j][1]==1:
+            if object.blast[j][0][2]==-5:
+                object.blast[j][2]=frame_count
+                object.blast[j][0][2]=-10
+            gameDisplay.blit(
+                object.after_end[1], (object.blast[j][0][0]+15, object.blast[j][0][1]-5))
+        if object.blast[j][2]+5== frame_count:
+            object.blast[j][1]=0
+
 
     if frame_count % 12 == 0:
         object.strafe()

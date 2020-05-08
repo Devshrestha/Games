@@ -6,13 +6,16 @@ import random
 class low():
 
     def __init__(self):
-        self.img = pygame.image.load('resorces/simple.png')
+        self.stage = [pygame.image.load('resorces/simple.png'),pygame.image.load('resorces/simple_b1.png'),pygame.image.load('resorces/simple_b2.png'),pygame.image.load('resorces/simple_b3.png')]
+        self.after_end=[pygame.image.load('resorces/fire_simple.png'),pygame.image.load('resorces/smoke_simple.png')]
+        self.img = self.stage[0]
         self.display_width = 600
         self.display_height = 700
         self.img_width = 60
         self.img_height = 60
         self.starfe_stage = 0
         self.strafe_value = 0
+        self.blast=[]
 
     def strafe(self):
         if self.starfe_stage in [-1, 0, 1]:
@@ -225,6 +228,10 @@ class low():
         for j in range(len(array)):
             a = array[j][0]
             self.the_wave[a][2] = self.the_wave[a][2]-5*(no)
+            if self.the_wave[a][2]==0:
+                if self.the_wave[a] not in self.blast:
+                    self.blast.append([self.the_wave[a],2,0])
+          
 
         self.draw_check()
 
