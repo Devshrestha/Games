@@ -7,14 +7,18 @@ from simple_opponent import low
 
 # variable used
 display_width = 600
-display_height = 700
+display_height = 730
 jet_width = 70
 jet_height = 80
 back = [None]*62
 x_position = frame_count = b_count = back_counter = 0
 p_bullet_x = []
 p_bullet_y = []
+score_list=[]
 game_rate = 30
+waves= []
+wave_counter=0
+playing =True
 # defining colors
 black = (0, 0, 0)
 white = (255, 255, 255)
@@ -23,6 +27,7 @@ yellow = (250, 250, 10)
 orange = (255, 133, 52)
 red = (240, 10, 10)
 # initializing
+pygame.font.init()
 # pylint: disable=no-member
 gameDisplay = pygame.display.set_mode((display_width, display_height))
 pygame.display.set_caption('Spacce Invader 2150')
@@ -38,6 +43,14 @@ def load_background():
 
 # function defined
 
+def game_control():
+    global waves,wave_counter
+
+    if len(waves[wave_counter].the_wave) == 0:
+        wave_counter+=1
+        waves[wave_counter].spawn_wave()
+        waves[wave_counter].pattern()
+    
 
 def text_objects(text, font, color):
     textSurface = font.render(text, True, color)
@@ -63,9 +76,22 @@ def soft_set():
 def hard_set():
     pass
 
+def head_up_display():
+    global score_list
+    #score
+    for i in range(len(waves[wave_counter].blast)):
+        if waves[wave_counter].blast[i] not in score_list:
+            score_list.append(waves[wave_counter].blast[i] )
+            player.score+=10
+    text = 'SCORE:'+str(player.score)
+    message_display(text,0,700,130,40,30,white)
+    #lives
+    for i in range(player.lives):
+        gameDisplay.blit(player.life_icon,(display_width-40-(i*40),700))
+    #rockets
+
 
 def opponet_fire(fire_list, object):
-    global a
     h = object.img_height
     # add new bullet to randomly to random no of enemy
     if frame_count % 30 == 0:
@@ -217,13 +243,18 @@ def is_colliding():
             player.lives -= 1
             soft_set()
 
+def define():
+    global waves
+    waves=[low() for i in range(10)]
 
 def game_loop():
-    global back_counter, x_position, p_bullet, frame_count, b_count
+    global back_counter, x_position, p_bullet, frame_count, b_count,playing
 
     while True:
+        game_control()
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
+                playing=False
                 pygame.quit()
                 quit()
 
@@ -242,7 +273,7 @@ def game_loop():
         gameDisplay.blit(player.player_img,
                          (player.draw_position_x, player.draw_position_y))
 
-        draw_simple_opponent(wave)
+        draw_simple_opponent(waves[wave_counter])
         if b_count % (1*game_rate) == 0:
             p_bullet_x.append(
                 player.draw_position_x+(player.img_width/2))
@@ -257,13 +288,13 @@ def game_loop():
         b_count += 1
         # collison check for player
         is_colliding()
+        head_up_display()
         pygame.display.update()
         clock.tick(60)
 
-
+define()
+waves[wave_counter].spawn_wave()
+waves[wave_counter].pattern()
 load_background()
-wave = low()
-wave.spawn_wave()
-wave.pattern()
 player = player_ship()
 game_loop()
