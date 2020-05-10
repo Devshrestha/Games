@@ -12,7 +12,7 @@ class low():
         self.display_width = 600
         self.display_height = 700
         self.img_width = 60
-        self.img_height = 60
+        self.img_height = 70
         self.starfe_stage = 0
         self.strafe_value = 0
         self.blast=[]
@@ -79,7 +79,7 @@ class low():
             self.ol.append(random.choice(
                 [[self.lay4_2[:2]], [[0, 1000]], [[0, 1000]]]))
 
-            self.ol2 = self.ol.copy()
+        self.ol2 = self.ol.copy()
 
     def pattern_T(self):
         self.layers = (self.no//2)+1

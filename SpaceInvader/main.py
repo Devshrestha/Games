@@ -10,14 +10,15 @@ display_width = 600
 display_height = 730
 jet_width = 70
 jet_height = 80
-back = [None]*62
+pos_wave=-100
+back = [None]*30
 x_position = frame_count = b_count = back_counter = 0
 p_bullet_x = []
 p_bullet_y = []
 score_list=[]
-game_rate = 30
-waves= []
 wave_counter=0
+game_rate = 30-(4*wave_counter)
+waves= []
 playing =True
 # defining colors
 black = (0, 0, 0)
@@ -38,19 +39,23 @@ clock = pygame.time.Clock()
 def load_background():
     global back
     for i in range(len(back)):
-        image_name = "resorces//"+str(i)+'.gif'
+        image_name = "resorces//"+str(i)+'.jpg'
         back[i] = pygame.image.load(image_name)
 
 # function defined
 
 def game_control():
-    global waves,wave_counter
+    global waves,wave_counter,pos_wave
 
     if len(waves[wave_counter].the_wave) == 0:
         wave_counter+=1
-        waves[wave_counter].spawn_wave()
-        waves[wave_counter].pattern()
-    
+        pos_wave = -100
+        
+        try:
+            waves[wave_counter].spawn_wave()
+            waves[wave_counter].pattern()
+        except IndexError:
+            quit()
 
 def text_objects(text, font, color):
     textSurface = font.render(text, True, color)
@@ -71,10 +76,21 @@ def soft_set():
     global x_position, frame_count, b_count, back_counter
     x_position = frame_count = b_count = back_counter = 0
     player.draw_position_x = 265
-
+    player.health = 40
 
 def hard_set():
-    pass
+    global x_position, frame_count, b_count, back_counter,wave_counter
+    x_position = frame_count = b_count = back_counter = 0
+    wave_counter=0
+    waves.clear()
+    define()
+    waves[wave_counter].spawn_wave()
+    waves[wave_counter].pattern()
+    player.bullet_count = 1
+    player.lives = 5
+    player.health = 40
+    player.score=0   
+
 
 def head_up_display():
     global score_list
@@ -124,7 +140,12 @@ def opponet_fire(fire_list, object):
                     if object.ol2[i][j][0]+object.img_width < player.draw_position_x+player.img_width and object.ol2[i][j][0]+object.img_width >= player.draw_position_x:
                         player.health -= 5
                         object.ol2[i][j][1] = 1100
-
+    if player.health == 0:
+        if player.lives>0:
+            player.lives-=1
+            soft_set()
+        if player.lives ==0:
+            hard_set()
     # update the position of bullet with every frame
     for i in range(len(object.the_wave)):
         for j in range(len(object.ol[i])):
@@ -132,7 +153,7 @@ def opponet_fire(fire_list, object):
 
 
 def draw_simple_opponent(object):
-    global p_bullet_y
+    global p_bullet_y,pos_wave
     temp = []
     o_fire = []
     image = object.img
@@ -147,7 +168,7 @@ def draw_simple_opponent(object):
 
         if object.the_wave[i][2] > 0:
             gameDisplay.blit(
-                image, (object.the_wave[i][0], object.the_wave[i][1]))
+                image, (object.the_wave[i][0], object.the_wave[i][1]+pos_wave))
             image=object.stage[0]
     # draw blast animation for enemy
     for j in range(len(object.blast)):
@@ -186,6 +207,8 @@ def draw_simple_opponent(object):
         o_fire = object.wave_fire()
 
     opponet_fire(o_fire.copy(), object)
+    if pos_wave <0:
+        pos_wave+=5
 
 
 def player_bullets(pos, pos_y, step):
@@ -237,7 +260,7 @@ def is_colliding():
         collison = True
 
     if collison:
-        if player.lives < 0:
+        if player.lives < 1:
             hard_set()
         else:
             player.lives -= 1
@@ -269,7 +292,7 @@ def game_loop():
         # player side strafe
         player.draw_position_x = player.draw_position_x+x_position
 
-        gameDisplay.blit(back[back_counter], (0, 0))
+        gameDisplay.blit(back[int(back_counter)], (0, 0))
         gameDisplay.blit(player.player_img,
                          (player.draw_position_x, player.draw_position_y))
 
@@ -278,11 +301,15 @@ def game_loop():
             p_bullet_x.append(
                 player.draw_position_x+(player.img_width/2))
             p_bullet_y.append(600)
-
+        #twmp
+        #temp
+        #temp
+        if wave_counter >4:
+            player.bullet_count=2
         player_bullets(p_bullet_x, p_bullet_y, frame_count)
         # create a background gif
-        back_counter += 1
-        if back_counter > 61:
+        back_counter += 0.5
+        if back_counter > 29:
             back_counter = 0
         frame_count += 1
         b_count += 1
