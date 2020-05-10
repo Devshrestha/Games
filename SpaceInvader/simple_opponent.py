@@ -6,8 +6,10 @@ import random
 class low():
 
     def __init__(self):
-        self.stage = [pygame.image.load('resorces/simple.png'),pygame.image.load('resorces/simple_b1.png'),pygame.image.load('resorces/simple_b2.png'),pygame.image.load('resorces/simple_b3.png')]
-        self.after_end=[pygame.image.load('resorces/fire_simple.png'),pygame.image.load('resorces/smoke_simple.png')]
+        self.stage = [pygame.image.load('resorces/simple.png'), pygame.image.load('resorces/simple_b1.png'),
+                      pygame.image.load('resorces/simple_b2.png'), pygame.image.load('resorces/simple_b3.png')]
+        self.after_end = [pygame.image.load(
+            'resorces/fire_simple.png'), pygame.image.load('resorces/smoke_simple.png')]
         self.img = self.stage[0]
         self.display_width = 600
         self.display_height = 700
@@ -15,7 +17,7 @@ class low():
         self.img_height = 70
         self.starfe_stage = 0
         self.strafe_value = 0
-        self.blast=[]
+        self.blast = []
 
     def strafe(self):
         if self.starfe_stage in [-1, 0, 1]:
@@ -228,10 +230,9 @@ class low():
         for j in range(len(array)):
             a = array[j][0]
             self.the_wave[a][2] = self.the_wave[a][2]-5*(no)
-            if self.the_wave[a][2]==0:
+            if self.the_wave[a][2] == 0:
                 if self.the_wave[a] not in self.blast:
-                    self.blast.append([self.the_wave[a],2,0])
-          
+                    self.blast.append([self.the_wave[a], 2, 0])
 
         self.draw_check()
 
@@ -268,10 +269,3 @@ class low():
 
         return intersect
 
-
-if __name__ == "__main__":
-
-    a = low()
-    a.spawn_wave()
-    a.pattern()
-    print(a.no, a.head)

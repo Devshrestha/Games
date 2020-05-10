@@ -3,6 +3,7 @@ import time
 import random
 from player import player_ship
 from simple_opponent import low
+from medium import med
 
 
 # variable used
@@ -10,16 +11,16 @@ display_width = 600
 display_height = 730
 jet_width = 70
 jet_height = 80
-pos_wave=-100
+pos_wave = -100
 back = [None]*30
 x_position = frame_count = b_count = back_counter = 0
 p_bullet_x = []
 p_bullet_y = []
-score_list=[]
-wave_counter=0
+score_list = []
+wave_counter = 0
 game_rate = 30-(4*wave_counter)
-waves= []
-playing =True
+waves = []
+playing = True
 # defining colors
 black = (0, 0, 0)
 white = (255, 255, 255)
@@ -44,18 +45,20 @@ def load_background():
 
 # function defined
 
+
 def game_control():
-    global waves,wave_counter,pos_wave
+    global waves, wave_counter, pos_wave
 
     if len(waves[wave_counter].the_wave) == 0:
-        wave_counter+=1
+        wave_counter += 1
         pos_wave = -100
-        
+
         try:
             waves[wave_counter].spawn_wave()
             waves[wave_counter].pattern()
         except IndexError:
             quit()
+
 
 def text_objects(text, font, color):
     textSurface = font.render(text, True, color)
@@ -78,10 +81,11 @@ def soft_set():
     player.draw_position_x = 265
     player.health = 40
 
+
 def hard_set():
-    global x_position, frame_count, b_count, back_counter,wave_counter
+    global x_position, frame_count, b_count, back_counter, wave_counter
     x_position = frame_count = b_count = back_counter = 0
-    wave_counter=0
+    wave_counter = 0
     waves.clear()
     define()
     waves[wave_counter].spawn_wave()
@@ -89,22 +93,22 @@ def hard_set():
     player.bullet_count = 1
     player.lives = 5
     player.health = 40
-    player.score=0   
+    player.score = 0
 
 
 def head_up_display():
     global score_list
-    #score
+    # score
     for i in range(len(waves[wave_counter].blast)):
         if waves[wave_counter].blast[i] not in score_list:
-            score_list.append(waves[wave_counter].blast[i] )
-            player.score+=10
+            score_list.append(waves[wave_counter].blast[i])
+            player.score += 10
     text = 'SCORE:'+str(player.score)
-    message_display(text,0,700,130,40,30,white)
-    #lives
+    message_display(text, 0, 700, 130, 40, 30, white)
+    # lives
     for i in range(player.lives):
-        gameDisplay.blit(player.life_icon,(display_width-40-(i*40),700))
-    #rockets
+        gameDisplay.blit(player.life_icon, (display_width-40-(i*40), 700))
+    # rockets
 
 
 def opponet_fire(fire_list, object):
@@ -141,10 +145,10 @@ def opponet_fire(fire_list, object):
                         player.health -= 5
                         object.ol2[i][j][1] = 1100
     if player.health == 0:
-        if player.lives>0:
-            player.lives-=1
+        if player.lives > 0:
+            player.lives -= 1
             soft_set()
-        if player.lives ==0:
+        if player.lives == 0:
             hard_set()
     # update the position of bullet with every frame
     for i in range(len(object.the_wave)):
@@ -153,42 +157,41 @@ def opponet_fire(fire_list, object):
 
 
 def draw_simple_opponent(object):
-    global p_bullet_y,pos_wave
+    global p_bullet_y, pos_wave
     temp = []
     o_fire = []
     image = object.img
-    #draw simple enemy
+    # draw simple enemy
     for i in range(len(object.the_wave)):
-        if object.the_wave[i][2]==15:
+        if object.the_wave[i][2] == 15:
             image = object.stage[1]
-        elif object.the_wave[i][2]==10:
+        elif object.the_wave[i][2] == 10:
             image = object.stage[2]
-        elif object.the_wave[i][2]==5:
-            image =object.stage[3]
+        elif object.the_wave[i][2] == 5:
+            image = object.stage[3]
 
         if object.the_wave[i][2] > 0:
             gameDisplay.blit(
                 image, (object.the_wave[i][0], object.the_wave[i][1]+pos_wave))
-            image=object.stage[0]
+            image = object.stage[0]
     # draw blast animation for enemy
     for j in range(len(object.blast)):
-        if object.blast[j][1]==2:
-            if object.blast[j][0][2]==0:
-                object.blast[j][2]=frame_count
-                object.blast[j][0][2]=-5
+        if object.blast[j][1] == 2:
+            if object.blast[j][0][2] == 0:
+                object.blast[j][2] = frame_count
+                object.blast[j][0][2] = -5
             gameDisplay.blit(
                 object.after_end[0], (object.blast[j][0][0]+15, object.blast[j][0][1]-5))
         if object.blast[j][2]+5 == frame_count:
-            object.blast[j][1]=1
-        if object.blast[j][1]==1:
-            if object.blast[j][0][2]==-5:
-                object.blast[j][2]=frame_count
-                object.blast[j][0][2]=-10
+            object.blast[j][1] = 1
+        if object.blast[j][1] == 1:
+            if object.blast[j][0][2] == -5:
+                object.blast[j][2] = frame_count
+                object.blast[j][0][2] = -10
             gameDisplay.blit(
                 object.after_end[1], (object.blast[j][0][0]+15, object.blast[j][0][1]-5))
-        if object.blast[j][2]+5== frame_count:
-            object.blast[j][1]=0
-
+        if object.blast[j][2]+5 == frame_count:
+            object.blast[j][1] = 0
 
     if frame_count % 12 == 0:
         object.strafe()
@@ -207,8 +210,18 @@ def draw_simple_opponent(object):
         o_fire = object.wave_fire()
 
     opponet_fire(o_fire.copy(), object)
-    if pos_wave <0:
-        pos_wave+=5
+    if pos_wave < 0:
+        pos_wave += 5
+
+
+def draw_medium(object):
+    global pos_wave
+    for i in range(object.no):
+        gameDisplay.blit(
+            object.img, (object.x_position[i], object.y_position+pos_wave))
+
+    if pos_wave < 0:
+        pos_wave += 5
 
 
 def player_bullets(pos, pos_y, step):
@@ -266,18 +279,20 @@ def is_colliding():
             player.lives -= 1
             soft_set()
 
+
 def define():
     global waves
-    waves=[low() for i in range(10)]
+    waves = [low() for i in range(10)]
+
 
 def game_loop():
-    global back_counter, x_position, p_bullet, frame_count, b_count,playing
+    global back_counter, x_position, p_bullet, frame_count, b_count, playing
 
     while True:
         game_control()
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                playing=False
+                playing = False
                 pygame.quit()
                 quit()
 
@@ -296,16 +311,17 @@ def game_loop():
         gameDisplay.blit(player.player_img,
                          (player.draw_position_x, player.draw_position_y))
 
-        draw_simple_opponent(waves[wave_counter])
+        # draw_simple_opponent(waves[wave_counter])
+        draw_medium(medium)
         if b_count % (1*game_rate) == 0:
             p_bullet_x.append(
                 player.draw_position_x+(player.img_width/2))
             p_bullet_y.append(600)
-        #twmp
-        #temp
-        #temp
-        if wave_counter >4:
-            player.bullet_count=2
+        # twmp
+        # temp
+        # temp
+        if wave_counter > 4:
+            player.bullet_count = 2
         player_bullets(p_bullet_x, p_bullet_y, frame_count)
         # create a background gif
         back_counter += 0.5
@@ -319,7 +335,9 @@ def game_loop():
         pygame.display.update()
         clock.tick(60)
 
+
 define()
+medium = med()
 waves[wave_counter].spawn_wave()
 waves[wave_counter].pattern()
 load_background()
