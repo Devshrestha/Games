@@ -219,7 +219,12 @@ def draw_medium(object):
     for i in range(object.no):
         gameDisplay.blit(
             object.img, (object.x_position[i], object.y_position+pos_wave))
+    if frame_count % 15==0:
+        object.strafe(pos_wave)
 
+    for i in range(object.no):
+        object.x_position[i] += object.strafe_value*2
+    
     if pos_wave < 0:
         pos_wave += 5
 

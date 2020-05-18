@@ -13,7 +13,26 @@ class med:
         self.img_height = 80
         self.health = 60
         self.x_position = []
+        self.starfe_stage = 0
+        self.strafe_value = 0
+
+
         self.spawn_pattern()
+
+    def strafe(self,entry):
+        if entry <=0 :
+            self.strafe_value = random.choice([-1,0,1,1,1,-1,-1])
+            if self.starfe_stage ==0:
+                if self.strafe_value == -1:
+                    self.starfe_stage  = -1
+                elif self.strafe_value == 1:
+                    self.starfe_stage  = 1
+            elif self.starfe_stage == -1:
+                self.strafe_value = 1
+                self.starfe_stage = 0
+            elif self.starfe_stage == 1:
+                self.strafe_value = -1 
+                self.starfe_stage = 0        
 
     def spawn_pattern(self):
         self.no = random.randint(2, 3)
@@ -32,3 +51,5 @@ class med:
             self.x_position.append(a1)
             self.x_position.append(a2)
             self.x_position.append(a3)
+
+        self.the_wave = [self.x_position,[self.y_position]*self.no,[self.health]*self.no]
